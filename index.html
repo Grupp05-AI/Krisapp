@@ -20,8 +20,13 @@
     <form id="tipForm">
       <label>Titel</label>
       <input id="title" required maxlength="120" placeholder="Kort titel" />
+      
       <label>Beskrivning</label>
       <textarea id="text" required rows="6" placeholder="Beskriv vad som hänt"></textarea>
+      
+      <label>Länk till fil (valfritt)</label>
+      <input id="attachment" type="url" placeholder="https://..." />
+      
       <button type="submit">Skicka</button>
     </form>
     <p id="msg"></p>
@@ -48,6 +53,7 @@
 
       const title = document.getElementById('title').value.trim();
       const text = document.getElementById('text').value.trim();
+      const attachment = document.getElementById('attachment').value.trim();
 
       if (!title || !text) {
         msg.textContent = "Fyll i både titel och beskrivning.";
@@ -56,7 +62,11 @@
       }
 
       // 4) Spara tipset (INSERT) – funkar utan inloggning pga policyn
-      const { error } = await supabase.from('tips').insert({ title, text });
+      const { error } = await supabase.from('tips').insert({
+        title,
+        text,
+        attachments: attachment ? [{ url: attachment }] : null
+      });
 
       if (error) {
         msg.textContent = "Kunde inte spara: " + error.message;
@@ -67,6 +77,10 @@
         form.reset();
       }
     });
+  </script>
+</body>
+</html>
+
   </script>
 </body>
 </html>
