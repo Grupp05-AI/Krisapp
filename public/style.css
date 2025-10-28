@@ -1,0 +1,13 @@
+body { font-family: system-ui, sans-serif; margin:0; background:#f6f8fb; }
+.wrap { max-width: 720px; margin: 36px auto; padding: 16px; }
+h1 { text-align:center; color:#0a1f33; }
+.chat { background:#fff; border-radius:12px; padding:16px; min-height:360px; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+.msg { margin:10px 0; }
+.msg.user { text-align:right; }
+.bubble { display:inline-block; padding:10px 12px; border-radius:10px; max-width:80%; }
+.user .bubble { background:#e8f0ff; }
+.assistant .bubble { background:#eef7ee; }
+.composer { display:flex; gap:8px; margin-top:12px; }
+.composer input { flex:1; padding:10px; font-size:16px; }
+.composer button { padding:10px 16px; background:#0055aa; color:#fff; border:0; border-radius:6px; }
+.hint { color:#666; font-size:12px; margin-top:8px; }

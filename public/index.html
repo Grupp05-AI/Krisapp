@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI-chatt – Krisinformation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <h1>AI-chatt</h1>
+    <div id="chat" class="chat"></div>
+    <form id="chatForm" class="composer">
+      <input id="msg" placeholder="Skriv din fråga eller beskriv händelsen..." autocomplete="off" />
+      <button type="submit">Skicka</button>
+    </form>
+    <p class="hint">Lämna inte personuppgifter. Vid akuta lägen – ring 112.</p>
+  </div>
+  <script type="module" src="/src/client.js"></script>
+</body>
+</html>
