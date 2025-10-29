@@ -3,19 +3,80 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI-chatt – Krisinformation</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Supabase insert-test</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; }
+    label { display:block; margin: 12px 0 6px; font-weight:600; }
+    input, textarea, button { width:100%; padding:10px; font-size:16px; }
+    button { cursor:pointer; margin-top:10px; }
+    pre { background:#0b1020; color:#d3e2ff; padding:12px; overflow:auto; }
+    .ok { color:#0a7a0a; } .err { color:#b00020; }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>AI-chatt</h1>
-    <div id="chat" class="chat"></div>
-    <form id="chatForm" class="composer">
-      <input id="msg" placeholder="Skriv din fråga eller beskriv händelsen..." autocomplete="off" />
-      <button type="submit">Skicka</button>
-    </form>
-    <p class="hint">Lämna inte personuppgifter. Vid akuta lägen – ring 112.</p>
-  </div>
-  <script type="module" src="/src/client.js"></script>
+  <h1>Test: Skicka rad till <code>tips</code></h1>
+  <p>Om detta fungerar ska du se en ny rad i Supabase → Table Editor → <b>tips</b>.</p>
+
+  <form id="f">
+    <label for="title">Titel</label>
+    <input id="title" placeholder="Kort titel" required />
+
+    <label for="text">Beskrivning</label>
+    <textarea id="text" rows="4" placeholder="Beskriv vad som hänt" required></textarea>
+
+    <button type="submit">Spara i DB</button>
+  </form>
+
+  <p id="msg"></p>
+  <h3>Svar från Supabase</h3>
+  <pre id="out"></pre>
+
+  <!-- Ladda supabase-js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // 🔁 BYT till dina riktiga värden från Supabase > Settings > API
+    const SUPABASE_URL = "https://rvnkbqgblrcvtfgwyepu.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_DRfE4M7EPcKsZo_yQxoszA_uE4j63Hz";
+
+    // Initiera klienten
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Hjälpfunktion: logga både data och error tydligt
+    function show(result) {
+      const out = document.getElementById('out');
+      out.textContent = JSON.stringify(result, null, 2);
+    }
+
+    // Testa en READ först (kräver inte insert-policy) – bra sanity check
+    (async () => {
+      const res = await sb.from('tips').select('*').limit(1);
+      console.log('Initial select tips:', res);
+      show({ initial_select: res });
+    })();
+
+    // Hantera formuläret (INSERT)
+    document.getElementById('f').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('msg');
+      msg.textContent = "Skickar…"; msg.className = "";
+
+      const title = document.getElementById('title').value.trim();
+      const text  = document.getElementById('text').value.trim();
+
+      const res = await sb.from('tips').insert({ title, text }).select();
+      console.log('Insert result:', res);
+      show(res);
+
+      if (res.error) {
+        msg.textContent = "Fel: " + res.error.message;
+        msg.className = "err";
+      } else {
+        msg.textContent = "Klart! Ny rad skapad med id: " + res.data[0].id;
+        msg.className = "ok";
+        e.target.reset();
+      }
+    });
+  </script>
 </body>
 </html>

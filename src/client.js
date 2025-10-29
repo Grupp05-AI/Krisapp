@@ -39,3 +39,34 @@ form.addEventListener('submit', async (e) => {
     console.error(err);
   }
 });
+// ====== Supabase TEST: skriv till 'tips' utan AI ======
+const SUPABASE_URL = "https://DIN-REF.supabase.co";     // BYT till ditt värde (Settings → API)
+const SUPABASE_ANON_KEY = "DIN_ANON_KEY";               // BYT till ditt anon key (inte service key!)
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const testForm = document.getElementById('testForm');
+const testMsg  = document.getElementById('testMsg');
+
+if (testForm) {
+  testForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    testMsg.textContent = "Skickar…";
+
+    const title = document.getElementById('tipTitle').value.trim();
+    const text  = document.getElementById('tipText').value.trim();
+
+    // Skriv en rad till 'tips' (kräver att du lagt till 'anon insert policy' i steg 1)
+    const { data, error } = await sb
+      .from('tips')
+      .insert({ title, text })
+      .select(); // tar tillbaka skapad rad
+
+    if (error) {
+      testMsg.textContent = "Fel: " + error.message;
+    } else {
+      testMsg.textContent = "Klart! Nytt tips skapat med id: " + data[0].id;
+      testForm.reset();
+    }
+  });
+}
+
